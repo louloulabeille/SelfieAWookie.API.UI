@@ -21,18 +21,6 @@ namespace SelfieAWookie.API.UI.Controllers
             _repository = repository;
         }
 
-        /*[HttpGet]
-        public IEnumerable<Selfie> Index()
-        {
-            *//*return Enumerable.Range(1, 10).Select(index => new Selfie()
-            {
-                Id = Random.Shared.Next(1, 100),
-                Title = "Title"+Random.Shared.Next(1, 100).ToString(),
-                Wookie = new Wookie() { Surname ="toto",Id=1},
-            }).ToArray();*//*
-            return _repository.GetAll().ToList();
-        }*/
-
         [HttpGet]
         public IActionResult Index()
         {
@@ -43,10 +31,10 @@ namespace SelfieAWookie.API.UI.Controllers
 
             //this.StatusCode(StatusCodes.Status400BadRequest);
             //IEnumerable<Selfie> list = _repository.GetAll(); // il va falloir faire un select avec un model dédié
-            IEnumerable<SelfieJson> list;
+            IActionResult result = BadRequest();
             try
             {
-                list = _repository.GetAll().Select(x =>
+                IEnumerable<SelfieJson> list = _repository.GetAll().Select(x =>
                 new SelfieJson()
                 {
                     Id = x.Id,
@@ -54,38 +42,44 @@ namespace SelfieAWookie.API.UI.Controllers
                     Title = x.Title,
                     WookieJson = x.Wookie is not null? new WookieJson() { Id = x.Wookie.Id , Surname = x.Wookie.Surname }:null,
                 }).ToList();
-                return this.Ok(list);
+                result =  this.Ok(list);
             }
             catch
             {
-                return this.BadRequest();
+                result = this.BadRequest();
             }
+            return result;
         }
 
         [HttpPost]
         public IActionResult AddOneSelfie(SelfieDTOAddOne selfie)
         {
             IActionResult result = this.BadRequest();
-
-            #region Ajout et enregistrement
-            Selfie addSelfie = _repository.Add(new Selfie
+            try
             {
-                Id=selfie.Id,
-                Title=selfie.Title,
-                ImagePath=selfie.PathImage,
-                Wookie = selfie.Wookie
-            });
-            
-            _repository.SaveChanges();
-            #endregion
+                #region Ajout et enregistrement
+                Selfie addSelfie = _repository.Add(new Selfie
+                {
+                    Id = selfie.Id,
+                    Title = selfie.Title,
+                    ImagePath = selfie.PathImage,
+                    Wookie = selfie.Wookie
+                });
 
-            if (addSelfie is not null)
-            {
-                selfie.Id = addSelfie.Id;
-                 result = this.Ok(selfie);
+                _repository.SaveChanges();
+                #endregion
+
+                if (addSelfie is not null)
+                {
+                    selfie.Id = addSelfie.Id;
+                    result = this.Ok(selfie);
+                }
             }
-            
-            
+            catch
+            {
+                result = this.BadRequest();
+            }
+
             return result;
         }
 
