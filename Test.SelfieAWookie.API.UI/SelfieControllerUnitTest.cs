@@ -14,33 +14,61 @@ namespace Test.SelfieAWookie.API.UI
 {
     public class SelfieControllerUnitTest
     {
+        private readonly SelfieDbContext _context;
 
-        /*[Fact]
-        public void ShouldReturnSelfie()
-        {
-            var moqRepository = new Mock<ISelfieRepository>();
-
-            SelfieController controller = new(moqRepository.Object);
-
-            var result = controller.Index();
-            var selfi = result.First();
-
-            Assert.NotNull(selfi);
-            Assert.True(selfi is Selfie);
-            Assert.NotNull(selfi.Wookie);
-            Assert.True(selfi.Wookie is Wookie);
-        }*/
-
-        [Fact]
-        public void ShouldReturnListOfSelfies()
+        public SelfieControllerUnitTest()
         {
             var builder = new DbContextOptionsBuilder<SelfieDbContext>();
             builder.UseInMemoryDatabase("Selfie-Dev");
             var options = builder.Options;
 
+            _context = new SelfieDbContext(options);
+
+            var data = new List<Selfie>()
+            {
+                new Selfie(){Id = 1,Title="bien joué", Wookie = new Wookie(){Id=1,Surname="Toto" }},
+                new Selfie() { Id = 2,Title="3ieme", Wookie = new Wookie(){Id=2,Surname="Titi" } },
+                new Selfie() { Id = 3,Title="Encore toi", Wookie = new Wookie(){Id=3,Surname="Toto" } },
+
+            };
+
+            _context.Selfies.AddRange(data);
+            _context.Wookies.AddRange(data.Select(item => item.Wookie));
+            _context.SaveChanges();
+
+        }
+
+        [Fact]
+        public void ShouldAddOneSelfie()
+        {
+            // Arrange
+
+            // Act
+            ISelfieDataLayer dataLayer = new SqlServerSelfieDataLayer(_context);
+            ISelfieRepository repository = new SelfieRepository(dataLayer);
+            SelfieController controller = new(repository);
+            SelfieDTOAddOne selfie = new ();
+
+            var result = controller.AddOneSelfie(selfie);
+            // Assert
+
+            Assert.NotNull(result);
+            Assert.IsType<OkObjectResult>(result);
+            var value = (result as OkObjectResult)?.Value as SelfieDTOAddOne;
+            Assert.NotNull(value);
+            Assert.IsType<SelfieDTOAddOne>(value);
+        }
+
+        [Fact]
+        public void ShouldReturnListOfSelfies()
+        {
+            /*var builder = new DbContextOptionsBuilder<SelfieDbContext>();
+            builder.UseInMemoryDatabase("Selfie-Dev");
+            var options = builder.Options;
+
             using var context = new SelfieDbContext(options);
             // pas utilise d'utiliser le mock, il est possible de faire une base inmemory
-            /*var moqDataLayer = new Mock<ISelfieDataLayer>();
+            var moqDataLayer = new Mock<ISelfieDataLayer>();
 
             moqDataLayer.Setup(item => item.GetAll()).Returns(new List<Selfie>()
             {
@@ -49,7 +77,7 @@ namespace Test.SelfieAWookie.API.UI
                 new Selfie() { Id = 3,Title="Encore toi", Wookie = new Wookie(){Id=1,Surname="Toto" } },
             });
 
-            ISelfieRepository repository = new SelfieRepository(moqDataLayer.Object);*/
+            ISelfieRepository repository = new SelfieRepository(moqDataLayer.Object);
 
             var data = new List<Selfie>()
             {
@@ -60,11 +88,11 @@ namespace Test.SelfieAWookie.API.UI
             };
 
             context.Selfies.AddRange(data);
-            context.Wookies.AddRange(data.Select(item=>item.Wookie));
-            context.SaveChanges();
+            context.Wookies.AddRange(data.Select(item => item.Wookie));
+            context.SaveChanges();*/
 
 
-            ISelfieDataLayer dataLayer = new SqlServerSelfieDataLayer(context);
+            ISelfieDataLayer dataLayer = new SqlServerSelfieDataLayer(_context);
             ISelfieRepository repository = new SelfieRepository(dataLayer);
             SelfieController controller = new (repository);
 

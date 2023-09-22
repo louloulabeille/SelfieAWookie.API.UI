@@ -61,5 +61,12 @@ namespace SelfieAWookie.API.UI.Controllers
             }
         }
 
+        [HttpPost]
+        public IActionResult AddOneSelfie(SelfieDTOAddOne selfie)
+        {
+            return this.Ok(selfie);
+        }
+
+
     }
 }

@@ -1,6 +1,7 @@
 ﻿using SelfieAWookie.Core.Selfies.Domain;
 using SelfieAWookie.Core.Selfies.Infrastructure.DataBase;
 using SelfieAWookie.Core.Selfies.Interface.Infrastructure;
+using SelfieAWookie.Core.Selfies.Interface.UnitOfWork;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,8 @@ namespace SelfieAWookie.Core.Selfies.Infrastructure.DataLayers
         public SqlServerWookieDataLayer(SelfieDbContext context) : base(context)
         {
         }
+
+        public IUnitOfWork UnitOfWork => Context;
 
         public ICollection<Wookie> Find(Expression<Func<Wookie, bool>> predicate)
         {

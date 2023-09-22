@@ -11,8 +11,6 @@ namespace SelfieAWookie.Core.Selfies.Domain
     {
         public int Id { get; set; }
         public string Surname { get; set; } = string.Empty;
-
-        [JsonIgnore]
         public ICollection<Selfie> Selfies { get; set; } = new List<Selfie>();
     }
 }
