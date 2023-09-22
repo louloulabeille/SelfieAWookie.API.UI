@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SelfieAWookie.Core.Selfies.Domain;
+using SelfieAWookie.Core.Selfies.Domain.ModelView;
 using SelfieAWookie.Core.Selfies.Infrastructure.DataBase;
 using SelfieAWookie.Core.Selfies.Interface.Repository;
 
@@ -40,8 +41,24 @@ namespace SelfieAWookie.API.UI.Controllers
             }).ToArray();*/
 
             //this.StatusCode(StatusCodes.Status400BadRequest);
-            IEnumerable<Selfie> list = _repository.GetAll(); // il va falloir faire un select avec un model dédié
-            return this.Ok(list);
+            //IEnumerable<Selfie> list = _repository.GetAll(); // il va falloir faire un select avec un model dédié
+            IEnumerable<SelfieJson> list;
+            try
+            {
+                list = _repository.GetAll().Select(x =>
+                new SelfieJson()
+                {
+                    Id = x.Id,
+                    PathImage = x.ImagePath,
+                    Title = x.Title,
+                    WookieJson = new WookieJson() { Id = x.Wookie.Id , Surname = x.Wookie.Surname } ?? null,
+                }).ToList();
+                return this.Ok(list);
+            }
+            catch (Exception ex)
+            {
+                return this.BadRequest();
+            }
         }
 
     }

@@ -19,7 +19,7 @@ builder.Services.AddSwaggerGen();
 #region DbContext
 builder.Services.AddDbContext<SelfieDbContext>(options =>
 {
-    options.UseSqlServer("Server=localhost;Database=Selfie-Dev;User Id=sa;Password=ieupn486jadF&;TrustServerCertificate=true;");
+    options.UseSqlServer(stringConnection);
 });
 #endregion
 #region Injection
@@ -39,7 +39,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-//app.UseStatusCodePagesWithRedirects("api/v1/ErrorsController/Error{0}"); //-- gestion des erreurs -- faire le controller error pour retourné un object error
+app.UseStatusCodePagesWithRedirects("api/v1/ErrorsController/{0}"); //-- gestion des erreurs -- faire le controller error pour retourné un object error
 
 app.UseHttpsRedirection();
 

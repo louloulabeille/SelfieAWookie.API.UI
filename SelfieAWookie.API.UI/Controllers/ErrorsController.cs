@@ -9,7 +9,7 @@ namespace SelfieAWookie.API.UI.Controllers
     public class ErrorsController : ControllerBase
     {
 
-        [HttpGet]
+        [HttpGet("404")]
         public Error Error404()
         {
             return Error.Error404;

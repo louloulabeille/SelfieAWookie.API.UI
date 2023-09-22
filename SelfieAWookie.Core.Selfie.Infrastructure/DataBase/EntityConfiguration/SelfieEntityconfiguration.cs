@@ -16,12 +16,12 @@ namespace SelfieAWookie.Core.Selfies.Infrastructure.DataBase.EntityConfiguration
             builder.ToTable(nameof(Selfie));
             builder.HasKey(x => x.Id);
 
-            /*builder.Property(x => x.Id).IsRequired()
+            builder.Property(x => x.Id).IsRequired()
                 .HasAnnotation("SqlServer:Identity", "1, 1");
 
             builder.Property(x => x.Title).IsRequired()
                 .HasMaxLength(100);
-            builder.Property(x => x.ImagePath).HasMaxLength(150);*/
+            builder.Property(x => x.ImagePath).HasMaxLength(150);
 
 
             #region correspondance base 
