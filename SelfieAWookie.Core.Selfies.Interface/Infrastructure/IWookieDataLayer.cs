@@ -3,7 +3,7 @@ using System.Linq.Expressions;
 
 namespace SelfieAWookie.Core.Selfies.Interface.Infrastructure
 {
-    public interface IWookieDataLayer
+    public interface IWookieDataLayer : IDataLayer
     {
         public ICollection<Wookie> GetAll();
         public Wookie? GetById(int id);

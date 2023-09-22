@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 
 namespace SelfieAWookie.Core.Selfies.Interface.Infrastructure
 {
-    public interface ISelfieDataLayer
+    public interface ISelfieDataLayer : IDataLayer
     {
         public ICollection<Selfie> GetAll();
         public Selfie? GetById(int id);

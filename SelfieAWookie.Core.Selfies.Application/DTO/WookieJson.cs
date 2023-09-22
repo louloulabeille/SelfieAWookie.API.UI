@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SelfieAWookie.Core.Selfies.Domain.ModelView
+namespace SelfieAWookie.Core.Selfies.Application.DTO
 {
     public class WookieJson
     {

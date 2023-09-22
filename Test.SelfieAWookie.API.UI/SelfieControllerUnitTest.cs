@@ -2,9 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using SelfieAWookie.API.UI.Controllers;
+using SelfieAWookie.Core.Selfies.Application.DTO;
 using SelfieAWookie.Core.Selfies.Application.Repository;
 using SelfieAWookie.Core.Selfies.Domain;
-using SelfieAWookie.Core.Selfies.Domain.ModelView;
 using SelfieAWookie.Core.Selfies.Infrastructure.DataBase;
 using SelfieAWookie.Core.Selfies.Infrastructure.DataLayers;
 using SelfieAWookie.Core.Selfies.Interface.Infrastructure;
@@ -77,6 +77,9 @@ namespace Test.SelfieAWookie.API.UI
             OkObjectResult? ok = result as OkObjectResult;
             Assert.NotNull(ok);
             Assert.NotNull(ok.Value);
+            List<SelfieJson>? selfie = ok.Value as List<SelfieJson>;
+            Assert.IsType<List<SelfieJson>>(selfie);
+            Assert.Equal(3, selfie.Count);
             
         }
     }

@@ -6,10 +6,11 @@ using System.Text;
 using System.Threading.Tasks;
 using SelfieAWookie.Core.Selfies.Domain;
 using SelfieAWookie.Core.Selfies.Infrastructure.DataBase.EntityConfiguration;
+using SelfieAWookie.Core.Selfies.Interface.UnitOfWork;
 
 namespace SelfieAWookie.Core.Selfies.Infrastructure.DataBase
 {
-    public class SelfieDbContext : DbContext
+    public class SelfieDbContext : DbContext , IUnitOfWork
     {
         public SelfieDbContext(DbContextOptions<SelfieDbContext> options) : base(options)
         {
@@ -33,6 +34,8 @@ namespace SelfieAWookie.Core.Selfies.Infrastructure.DataBase
             /*var connection = @"Server=localhost;Database=Selfie-Dev;User Id=sa;Password=ieupn486jadF&;TrustServerCertificate=true;";
             optionsBuilder.UseSqlServer(connection);*/
         }
+
+
         #endregion
     }
 }

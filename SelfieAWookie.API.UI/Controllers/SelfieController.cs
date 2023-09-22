@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using SelfieAWookie.Core.Selfies.Application.DTO;
 using SelfieAWookie.Core.Selfies.Domain;
-using SelfieAWookie.Core.Selfies.Domain.ModelView;
 using SelfieAWookie.Core.Selfies.Infrastructure.DataBase;
 using SelfieAWookie.Core.Selfies.Interface.Repository;
 
@@ -51,11 +51,11 @@ namespace SelfieAWookie.API.UI.Controllers
                     Id = x.Id,
                     PathImage = x.ImagePath,
                     Title = x.Title,
-                    WookieJson = new WookieJson() { Id = x.Wookie.Id , Surname = x.Wookie.Surname } ?? null,
+                    WookieJson = x.Wookie is not null? new WookieJson() { Id = x.Wookie.Id , Surname = x.Wookie.Surname }:null,
                 }).ToList();
                 return this.Ok(list);
             }
-            catch (Exception ex)
+            catch
             {
                 return this.BadRequest();
             }

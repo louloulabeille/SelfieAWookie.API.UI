@@ -4,6 +4,7 @@ using SelfieAWookie.Core.Selfies.Infrastructure.DataBase;
 using SelfieAWookie.Core.Selfies.Infrastructure.DataLayers;
 using SelfieAWookie.Core.Selfies.Interface.Infrastructure;
 using SelfieAWookie.Core.Selfies.Interface.Repository;
+using SelfieAWookie.API.UI.ExtensionMethod;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,11 +24,12 @@ builder.Services.AddDbContext<SelfieDbContext>(options =>
 });
 #endregion
 #region Injection
-builder.Services.AddScoped<ISelfieDataLayer, SqlServerSelfieDataLayer>();
+/*builder.Services.AddScoped<ISelfieDataLayer, SqlServerSelfieDataLayer>();
 builder.Services.AddScoped<ISelfieRepository, SelfieRepository>();
 
 builder.Services.AddScoped<IWookieDataLayer, SqlServerWookieDataLayer>();
-builder.Services.AddScoped<IWookieRepository, WookieRepository>();
+builder.Services.AddScoped<IWookieRepository, WookieRepository>();*/
+builder.Services.PrepareInjectionData();
 #endregion
 
 var app = builder.Build();
