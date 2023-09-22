@@ -28,13 +28,14 @@ namespace Test.SelfieAWookie.API.UI
             {
                 new Selfie(){Id = 1,Title="bien joué", Wookie = new Wookie(){Id=1,Surname="Toto" }},
                 new Selfie() { Id = 2,Title="3ieme", Wookie = new Wookie(){Id=2,Surname="Titi" } },
-                new Selfie() { Id = 3,Title="Encore toi", Wookie = new Wookie(){Id=3,Surname="Toto" } },
+                new Selfie() { Id = 3,Title="Encore toi", Wookie = new Wookie(){Id=3,Surname="Tata" } },
 
             };
 
             _context.Selfies.AddRange(data);
             _context.Wookies.AddRange(data.Select(item => item.Wookie));
             _context.SaveChanges();
+            _context.ChangeTracker.Clear();
 
         }
 
@@ -47,9 +48,14 @@ namespace Test.SelfieAWookie.API.UI
             ISelfieDataLayer dataLayer = new SqlServerSelfieDataLayer(_context);
             ISelfieRepository repository = new SelfieRepository(dataLayer);
             SelfieController controller = new(repository);
-            SelfieDTOAddOne selfie = new ();
+            SelfieDTOAddOne selfieAdd = new() {
+                Id= 0,
+                Title = "j'aime les frittes",
+                PathImage = null,
+                Wookie = new Wookie() { Id = 1, Surname = "Toto" },
+            };
 
-            var result = controller.AddOneSelfie(selfie);
+            var result = controller.AddOneSelfie(selfieAdd);
             // Assert
 
             Assert.NotNull(result);
@@ -57,6 +63,10 @@ namespace Test.SelfieAWookie.API.UI
             var value = (result as OkObjectResult)?.Value as SelfieDTOAddOne;
             Assert.NotNull(value);
             Assert.IsType<SelfieDTOAddOne>(value);
+            Assert.Equal(selfieAdd.Title, value.Title);
+            Assert.Equal(selfieAdd, value);
+
+            _context.Selfies.ToList();
         }
 
         [Fact]

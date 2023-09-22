@@ -2,6 +2,7 @@
 using SelfieAWookie.Core.Selfies.Infrastructure.DataLayers;
 using SelfieAWookie.Core.Selfies.Interface.Infrastructure;
 using SelfieAWookie.Core.Selfies.Interface.Repository;
+using SelfieAWookie.Core.Selfies.Interface.UnitOfWork;
 using System.Linq.Expressions;
 
 namespace SelfieAWookie.Core.Selfies.Application.Repository
@@ -13,6 +14,11 @@ namespace SelfieAWookie.Core.Selfies.Application.Repository
         public SelfieRepository(ISelfieDataLayer dataLayer  ) 
         {
             _dataLayer = dataLayer;
+        }
+
+        public Selfie Add(Selfie item)
+        {
+            return _dataLayer.Add(item);
         }
 
         public ICollection<Selfie> Find(Expression<Func<Selfie, bool>> predicate)
@@ -28,6 +34,11 @@ namespace SelfieAWookie.Core.Selfies.Application.Repository
         public Selfie? GetById(int id)
         {
             return _dataLayer.GetById(id);
+        }
+
+        public int SaveChanges()
+        {
+            return _dataLayer.UnitOfWork.SaveChanges();
         }
     }
 }

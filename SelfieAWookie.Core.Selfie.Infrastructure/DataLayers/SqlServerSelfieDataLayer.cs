@@ -21,6 +21,13 @@ namespace SelfieAWookie.Core.Selfies.Infrastructure.DataLayers
 
         public IUnitOfWork UnitOfWork => this.Context;
 
+        public Selfie Add(Selfie item)
+        {
+            Context.Entry<Wookie>(item.Wookie).State = EntityState.Detached;
+            Context.Entry<Selfie>(item).State = EntityState.Added;
+            return Context.Selfies.Add(item).Entity;
+        }
+
         public ICollection<Selfie> Find(Expression<Func<Selfie, bool>> predicate)
         {
             return Context.Selfies.Where(predicate).Include(x=>x.Wookie).ToList();

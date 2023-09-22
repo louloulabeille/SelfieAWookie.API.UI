@@ -8,6 +8,7 @@ namespace SelfieAWookie.Core.Selfies.Interface.Infrastructure
     {
         public ICollection<Selfie> GetAll();
         public Selfie? GetById(int id);
-        public ICollection<Selfie> Find(Expression<Func<Selfie, bool>> predicate); 
+        public ICollection<Selfie> Find(Expression<Func<Selfie, bool>> predicate);
+        public Selfie Add(Selfie item);
     }
 }

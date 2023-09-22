@@ -5,6 +5,7 @@ using SelfieAWookie.Core.Selfies.Application.DTO;
 using SelfieAWookie.Core.Selfies.Domain;
 using SelfieAWookie.Core.Selfies.Infrastructure.DataBase;
 using SelfieAWookie.Core.Selfies.Interface.Repository;
+using SelfieAWookie.Core.Selfies.Interface.UnitOfWork;
 
 namespace SelfieAWookie.API.UI.Controllers
 {
@@ -64,7 +65,28 @@ namespace SelfieAWookie.API.UI.Controllers
         [HttpPost]
         public IActionResult AddOneSelfie(SelfieDTOAddOne selfie)
         {
-            return this.Ok(selfie);
+            IActionResult result = this.BadRequest();
+
+            #region Ajout et enregistrement
+            Selfie addSelfie = _repository.Add(new Selfie
+            {
+                Id=selfie.Id,
+                Title=selfie.Title,
+                ImagePath=selfie.PathImage,
+                Wookie = selfie.Wookie
+            });
+            
+            _repository.SaveChanges();
+            #endregion
+
+            if (addSelfie is not null)
+            {
+                selfie.Id = addSelfie.Id;
+                 result = this.Ok(selfie);
+            }
+            
+            
+            return result;
         }
 
 
