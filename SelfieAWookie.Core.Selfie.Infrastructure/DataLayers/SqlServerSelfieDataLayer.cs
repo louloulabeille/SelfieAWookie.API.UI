@@ -43,7 +43,7 @@ namespace SelfieAWookie.Core.Selfies.Infrastructure.DataLayers
             return Context.Selfies.Include(x => x.Wookie).Where(x=>x.Id==id).FirstOrDefault();
         }
 
-        public ICollection<Selfie> GetByWookie(int? id)
+        public ICollection<Selfie> GetAllByWookie(int? id)
         {
             var result = (from s in Context.Selfies
                          join w in Context.Wookies on s.Wookie.Id equals w.Id

@@ -87,7 +87,7 @@ namespace SelfieAWookie.API.UI.Controllers
         public IActionResult ListeSelfieByOneWookie([FromQuery]int? wookieId = 0)
         {
             //IActionResult result = Ok();
-            var list = _repository.GetByWookie(wookieId);
+            var list = _repository.GetAllByWookie(wookieId);
 
 
             return this.Ok(list.ToList());
