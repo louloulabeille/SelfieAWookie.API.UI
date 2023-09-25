@@ -10,5 +10,6 @@ namespace SelfieAWookie.Core.Selfies.Interface.Infrastructure
         public Selfie? GetById(int id);
         public ICollection<Selfie> Find(Expression<Func<Selfie, bool>> predicate);
         public Selfie Add(Selfie item);
+        public ICollection<Selfie> GetByWookie(int? id);
     }
 }

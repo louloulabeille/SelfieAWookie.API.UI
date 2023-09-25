@@ -42,5 +42,15 @@ namespace SelfieAWookie.Core.Selfies.Infrastructure.DataLayers
         {
             return Context.Selfies.Include(x => x.Wookie).Where(x=>x.Id==id).FirstOrDefault();
         }
+
+        public ICollection<Selfie> GetByWookie(int? id)
+        {
+            var result = (from s in Context.Selfies
+                         join w in Context.Wookies on s.Wookie.Id equals w.Id
+                         where w.Id == id
+                         select s).Include(x=>x.Wookie);
+            return result.ToList();
+            //return Context.Wookies.Find(id)?.Selfies.ToList() ?? new List<Selfie>();
+        }
     }
 }

@@ -36,6 +36,11 @@ namespace SelfieAWookie.Core.Selfies.Application.Repository
             return _dataLayer.GetById(id);
         }
 
+        public ICollection<Selfie> GetByWookie(int? id)
+        {
+            return _dataLayer.GetByWookie(id);
+        }
+
         public int SaveChanges()
         {
             return _dataLayer.UnitOfWork.SaveChanges();

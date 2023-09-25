@@ -6,7 +6,7 @@ using SelfieAWookie.Core.Selfies.Interface.Repository;
 
 namespace SelfieAWookie.API.UI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/v1/[controller]")]
     [ApiController]
     public class WookieController : ControllerBase
     {
@@ -19,7 +19,7 @@ namespace SelfieAWookie.API.UI.Controllers
             _context = context;
         }
 
-        [HttpGet("Get")]
+        [HttpGet]
         public ICollection<Wookie> Get()
         {
             return _context.Wookies.ToList();

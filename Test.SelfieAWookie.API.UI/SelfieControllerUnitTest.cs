@@ -15,6 +15,7 @@ namespace Test.SelfieAWookie.API.UI
     public class SelfieControllerUnitTest
     {
         private readonly SelfieDbContext _context;
+        private readonly ISelfieRepository _repository;
 
         public SelfieControllerUnitTest()
         {
@@ -29,13 +30,29 @@ namespace Test.SelfieAWookie.API.UI
                 new Selfie(){Id = 1,Title="bien joué", Wookie = new Wookie(){Id=1,Surname="Toto" }},
                 new Selfie() { Id = 2,Title="3ieme", Wookie = new Wookie(){Id=2,Surname="Titi" } },
                 new Selfie() { Id = 3,Title="Encore toi", Wookie = new Wookie(){Id=3,Surname="Tata" } },
-
+                new Selfie() { Id = 4,Title="on va essayer", Wookie = new Wookie(){Id=1,Surname="Toto" } },
             };
 
-            _context.Selfies.AddRange(data);
-            _context.Wookies.AddRange(data.Select(item => item.Wookie));
+            var result = data.Select(item => item.Wookie).GroupBy(x=>x.Id).Select(first=>first.First());
+            _context.Wookies.AddRange(result);
             _context.SaveChanges();
             _context.ChangeTracker.Clear();
+
+            foreach (var selfie in data)
+            {
+                _context.Entry(selfie.Wookie).State = EntityState.Detached;
+                _context.Entry(selfie).State = EntityState.Added;
+                _context.Add(selfie);
+                _context.SaveChanges();
+            }
+
+           /* _context.Selfies.AddRange(data);
+
+            _context.SaveChanges();*/
+            _context.ChangeTracker.Clear();
+
+            var dataLayer = new SqlServerSelfieDataLayer(_context);
+            _repository = new SelfieRepository(dataLayer);
 
         }
 
@@ -45,9 +62,9 @@ namespace Test.SelfieAWookie.API.UI
             // Arrange
 
             // Act
-            ISelfieDataLayer dataLayer = new SqlServerSelfieDataLayer(_context);
-            ISelfieRepository repository = new SelfieRepository(dataLayer);
-            SelfieController controller = new(repository);
+            /*ISelfieDataLayer dataLayer = new SqlServerSelfieDataLayer(_context);
+            ISelfieRepository repository = new SelfieRepository(dataLayer);*/
+            SelfieController controller = new(_repository);
             SelfieDTOAddOne selfieAdd = new() {
                 Id= 0,
                 Title = "j'aime les frittes",
@@ -101,10 +118,9 @@ namespace Test.SelfieAWookie.API.UI
             context.Wookies.AddRange(data.Select(item => item.Wookie));
             context.SaveChanges();*/
 
-
-            ISelfieDataLayer dataLayer = new SqlServerSelfieDataLayer(_context);
-            ISelfieRepository repository = new SelfieRepository(dataLayer);
-            SelfieController controller = new (repository);
+            /*ISelfieDataLayer dataLayer = new SqlServerSelfieDataLayer(_context);
+            ISelfieRepository repository = new SelfieRepository(dataLayer);*/
+            SelfieController controller = new (_repository);
 
             var result = controller.Index();
 
@@ -117,8 +133,27 @@ namespace Test.SelfieAWookie.API.UI
             Assert.NotNull(ok.Value);
             List<SelfieJson>? selfie = ok.Value as List<SelfieJson>;
             Assert.IsType<List<SelfieJson>>(selfie);
-            Assert.Equal(3, selfie.Count);
+            Assert.Equal(4, selfie.Count);
             
         }
+
+        [Fact]
+        public void ShouldListSelfieByOnWookie()
+        {
+            SelfieController controller = new(_repository);
+            int wookieId = 1;
+
+            var result = controller.ListeSelfieByOneWookie(wookieId);
+
+            Assert.IsType<OkObjectResult>(result);
+            var ok = result as OkObjectResult;
+            Assert.NotNull(ok);
+            
+            var valeur = ok.Value as List<Selfie>;
+            Assert.NotNull(valeur);
+            Assert.Equal(2, valeur.Count);
+
+        }
+
     }
 }

@@ -27,10 +27,10 @@ namespace SelfieAWookie.API.UI.Controllers
             /*IEnumerable<Selfie> list = Enumerable.Range(1, 10).Select(index => new Selfie()
             {
                 Id = Random.Shared.Next(1, 100),
-            }).ToArray();*/
+            }).ToArray();
 
             //this.StatusCode(StatusCodes.Status400BadRequest);
-            //IEnumerable<Selfie> list = _repository.GetAll(); // il va falloir faire un select avec un model dédié
+            //IEnumerable<Selfie> list = _repository.GetAll(); // il va falloir faire un select avec un model dédié*/
             IActionResult result = BadRequest();
             try
             {
@@ -83,6 +83,15 @@ namespace SelfieAWookie.API.UI.Controllers
             return result;
         }
 
+       [HttpGet("GetSelfieByWookieId")]
+        public IActionResult ListeSelfieByOneWookie([FromQuery]int? wookieId = 0)
+        {
+            //IActionResult result = Ok();
+            var list = _repository.GetByWookie(wookieId);
+
+
+            return this.Ok(list.ToList());
+        }
 
     }
 }
