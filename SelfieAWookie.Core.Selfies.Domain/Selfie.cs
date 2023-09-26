@@ -13,6 +13,7 @@ namespace SelfieAWookie.Core.Selfies.Domain
         public int ImageId { get; set; }
         public Image Image { get; set; }
         //public int WookieId { get; set; }  // pas obligé de le mettre c'est un shadow clé étrangère
+        public string? Description { get; set; }
 
         [JsonIgnore]
         public Wookie Wookie { get; set; }

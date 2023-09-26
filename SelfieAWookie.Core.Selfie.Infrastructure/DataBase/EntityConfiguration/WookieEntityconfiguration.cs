@@ -20,7 +20,6 @@ namespace SelfieAWookie.Core.Selfies.Infrastructure.DataBase.EntityConfiguration
 
             builder.Property(x => x.Surname).IsRequired()
                 .HasMaxLength(155);
-
         }
     }
 }
