@@ -52,5 +52,10 @@ namespace SelfieAWookie.Core.Selfies.Application.Repository
         {
             return _imageDataLayer.Add(url);
         }
+
+        public Selfie Update (Selfie item)
+        {
+            return _dataLayer.Update(item);
+        }
     }
 }

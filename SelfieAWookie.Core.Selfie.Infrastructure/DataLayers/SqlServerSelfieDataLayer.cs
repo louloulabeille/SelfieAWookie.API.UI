@@ -23,8 +23,12 @@ namespace SelfieAWookie.Core.Selfies.Infrastructure.DataLayers
 
         public Selfie Add(Selfie item)
         {
-            Context.Entry<Wookie>(item.Wookie).State = EntityState.Detached;
-            Context.Entry<Selfie>(item).State = EntityState.Added;
+            if (item.Wookie.Id > 0)
+            {
+                Context.Entry<Wookie>(item.Wookie).State = EntityState.Detached;
+                Context.Entry<Selfie>(item).State = EntityState.Added;
+            }
+
             return Context.Selfies.Add(item).Entity;
         }
 
@@ -51,6 +55,11 @@ namespace SelfieAWookie.Core.Selfies.Infrastructure.DataLayers
                          select s).Include(x=>x.Wookie);
             return result.ToList();
             //return Context.Wookies.Find(id)?.Selfies.ToList() ?? new List<Selfie>();
+        }
+
+        public Selfie Update(Selfie item)
+        {
+            return Context.Selfies.Update(item).Entity;
         }
     }
 }

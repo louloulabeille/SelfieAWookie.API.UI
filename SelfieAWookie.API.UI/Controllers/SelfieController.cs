@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Connections.Features;
+using Microsoft.AspNetCore.Mvc;
 using SelfieAWookie.Core.Selfies.Application.DTO;
 using SelfieAWookie.Core.Selfies.Domain;
 using SelfieAWookie.Core.Selfies.Interface.Repository;
@@ -63,7 +64,8 @@ namespace SelfieAWookie.API.UI.Controllers
                     Id = selfie.Id,
                     Title = selfie.Title,
                     //ImagePath = selfie.PathImage,
-                    Wookie = selfie.Wookie
+                    Wookie = selfie.Wookie,
+                    Image = null
                 });
 
                 _repository.SaveChanges();
@@ -77,6 +79,7 @@ namespace SelfieAWookie.API.UI.Controllers
             }
             catch
             {
+                //result = this.BadRequest(ex);
                 result = this.BadRequest();
             }
 
@@ -122,28 +125,50 @@ namespace SelfieAWookie.API.UI.Controllers
 
         [Route("Photos")]
         [HttpPost()]
-        public async Task<IActionResult> AddPictureSync(IFormFile file)
+        public async Task<IActionResult> AddPictureSync(IFormFile file, int selfieId)
         {
-            IActionResult result;
+            IActionResult result = this.BadRequest();
             //string path = Path.Combine(_environment.ContentRootPath,@"images\selfies");
             string path = Path.Combine(_environment.WebRootPath, @"images\selfies");
-            if (!Directory.Exists(path)) { Directory.CreateDirectory(path); }
+            Selfie? selfie = _repository.GetById(selfieId);
 
-            path = Path.Combine(path, file.FileName);
-
-            using FileStream fileStream = new (path,FileMode.OpenOrCreate) ;
-            try
+            if (selfie is not null || selfieId != 0)
             {
-                fileStream.Seek(0, SeekOrigin.Begin);
-                await file.CopyToAsync(fileStream);
-                //var content = await stream.ReadToEndAsync();
-                Image img = this._repository.AddImage("/images/selfies/"+file.FileName);
+                // enregistrement du fichier au niveau du serveur dans wwwRoot
+                if (!Directory.Exists(path)) { Directory.CreateDirectory(path); }
+                path = Path.Combine(path, file.FileName);
 
-                this._repository.SaveChanges();
-                result = this.Ok(img.Url);
-            }catch
-            {
-                result = this.BadRequest();
+                using FileStream fileStream = new(path, FileMode.OpenOrCreate);
+                try
+                {
+                    fileStream.Seek(0, SeekOrigin.Begin);
+                    await file.CopyToAsync(fileStream);
+
+                    //var content = await stream.ReadToEndAsync();
+                    //Image img = this._repository.AddImage("/images/selfies/" + file.FileName);
+                    // création de l'object image
+                    Image img = new () {
+                        Id = 0,
+                        Url = "/images/selfies/" + file.FileName,
+                    };
+
+                    // modfication de selfie et enregistrement de l'image dans la base
+                    if(selfie is not null)
+                    {
+                        selfie.Image = img;
+
+                        _repository.Update(selfie);
+
+                        this._repository.SaveChanges();
+                        result = this.Ok(img.Url);
+                    }
+                    
+                }
+                catch
+                {
+                    // il faudrait créer un model error à renvoyer
+                    result = this.BadRequest();
+                }
             }
             
             return result;

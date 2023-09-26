@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SelfieAWookie.Core.Selfies.Infrastructure.DataBase;
 
@@ -11,9 +12,11 @@ using SelfieAWookie.Core.Selfies.Infrastructure.DataBase;
 namespace SelfieAWookie.API.UI.Migrations.Migrations
 {
     [DbContext(typeof(SelfieDbContext))]
-    partial class SelfieDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230926151831_UpdateModelSelfie")]
+    partial class UpdateModelSelfie
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -17,5 +17,6 @@ namespace SelfieAWookie.Core.Selfies.Interface.Repository
         public Selfie Add (Selfie item);
         public ICollection<Selfie> GetAllByWookie(int? id);
         public Image AddImage(string url);
+        public Selfie Update(Selfie item);
     }
 }
