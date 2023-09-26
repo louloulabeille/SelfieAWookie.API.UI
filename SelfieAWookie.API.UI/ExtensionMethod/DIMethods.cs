@@ -18,6 +18,8 @@ namespace SelfieAWookie.API.UI.ExtensionMethod
 
             services.AddScoped<IWookieDataLayer, SqlServerWookieDataLayer>();
             services.AddScoped<IWookieRepository, WookieRepository>();
+
+            services.AddScoped<IImageDataLayer, SqlServerImageDataLayer>();
         }
     }
 }

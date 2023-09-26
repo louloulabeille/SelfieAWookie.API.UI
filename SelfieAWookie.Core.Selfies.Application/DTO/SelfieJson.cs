@@ -10,7 +10,7 @@ namespace SelfieAWookie.Core.Selfies.Application.DTO
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public string? PathImage { get; set; }
+        //public string? PathImage { get; set; }
         public WookieJson? WookieJson { get; set; }
     }
 }

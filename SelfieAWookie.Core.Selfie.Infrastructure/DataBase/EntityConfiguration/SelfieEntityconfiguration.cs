@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace SelfieAWookie.Core.Selfies.Infrastructure.DataBase.EntityConfiguration
 {
-    internal class SelfieEntityconfiguration : IEntityTypeConfiguration<Selfie>
+    internal class SelfieEntityConfiguration : IEntityTypeConfiguration<Selfie>
     {
         public void Configure(EntityTypeBuilder<Selfie> builder)
         {
@@ -21,13 +21,14 @@ namespace SelfieAWookie.Core.Selfies.Infrastructure.DataBase.EntityConfiguration
 
             builder.Property(x => x.Title).IsRequired()
                 .HasMaxLength(100);
-            builder.Property(x => x.ImagePath).HasMaxLength(150);
-
 
             #region correspondance base 
             builder.HasOne(x => x.Wookie)
                 .WithMany(x => x.Selfies);
             //.HasForeignKey(x => x.WookieId); // pas obligé de mettre une clé étrangère
+
+            builder.HasOne(x => x.Image)
+                .WithMany(b=>b.Selfies);        // une image peut être dans plusieurs selfies
             #endregion
         }
     }

@@ -10,10 +10,12 @@ namespace SelfieAWookie.Core.Selfies.Application.Repository
     public class SelfieRepository : ISelfieRepository
     {
         private readonly ISelfieDataLayer _dataLayer;
+        private readonly IImageDataLayer _imageDataLayer;
 
-        public SelfieRepository(ISelfieDataLayer dataLayer  ) 
+        public SelfieRepository(ISelfieDataLayer dataLayer, IImageDataLayer imageDataLayer  ) 
         {
             _dataLayer = dataLayer;
+            _imageDataLayer = imageDataLayer;
         }
 
         public Selfie Add(Selfie item)
@@ -44,6 +46,11 @@ namespace SelfieAWookie.Core.Selfies.Application.Repository
         public int SaveChanges()
         {
             return _dataLayer.UnitOfWork.SaveChanges();
+        }
+
+        public Image AddImage(string url)
+        {
+            return _imageDataLayer.Add(url);
         }
     }
 }

@@ -9,6 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="images\selfies\Capture d’écran 2023-02-04 133103.jpg" />
+    <Content Include="images\selfies\Capture d’écran 2023-05-26 150656.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.11" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.19.5" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
@@ -17,6 +22,10 @@
   <ItemGroup>
     <ProjectReference Include="..\SelfieAWookie.API.UI.Models\SelfieAWookie.API.UI.Models.csproj" />
     <ProjectReference Include="..\SelfieAWookie.Core.Selfies.Application\SelfieAWookie.Core.Selfies.Application.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
   </ItemGroup>
 
 </Project>

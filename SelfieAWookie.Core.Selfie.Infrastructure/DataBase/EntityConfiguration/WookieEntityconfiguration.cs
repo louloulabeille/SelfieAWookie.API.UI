@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace SelfieAWookie.Core.Selfies.Infrastructure.DataBase.EntityConfiguration
 {
-    public class WookieEntityconfiguration : IEntityTypeConfiguration<Wookie>
+    public class WookieEntityConfiguration : IEntityTypeConfiguration<Wookie>
     {
         public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Wookie> builder)
         {

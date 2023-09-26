@@ -20,19 +20,21 @@ namespace SelfieAWookie.Core.Selfies.Infrastructure.DataBase
         #region DbSet
         public virtual DbSet<Selfie> Selfies { get; set; }
         public virtual DbSet<Wookie> Wookies { get; set; }
+        public virtual DbSet<Image> Images { get; set; }
         #endregion
 
         #region protected Override
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfiguration<Selfie>(new SelfieEntityconfiguration());
-            modelBuilder.ApplyConfiguration<Wookie>(new WookieEntityconfiguration());
+            modelBuilder.ApplyConfiguration<Selfie>(new SelfieEntityConfiguration());
+            modelBuilder.ApplyConfiguration<Wookie>(new WookieEntityConfiguration());
+            modelBuilder.ApplyConfiguration<Image>(new ImageEntityConfiguration());
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            /*var connection = @"Server=localhost;Database=Selfie-Dev;User Id=sa;Password=ieupn486jadF&;TrustServerCertificate=true;";
-            optionsBuilder.UseSqlServer(connection);*/
+            var connection = @"Server=localhost;Database=Selfie-Dev;User Id=sa;Password=ieupn486jadF&;TrustServerCertificate=true;";
+            optionsBuilder.UseSqlServer(connection);
         }
 
 

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Moq;
@@ -16,6 +17,7 @@ namespace Test.SelfieAWookie.API.UI
     {
         private readonly SelfieDbContext _context;
         private readonly ISelfieRepository _repository;
+        private readonly IWebHostEnvironment _environment;
 
         public SelfieControllerUnitTest()
         {
@@ -52,7 +54,10 @@ namespace Test.SelfieAWookie.API.UI
             _context.ChangeTracker.Clear();
 
             var dataLayer = new SqlServerSelfieDataLayer(_context);
-            _repository = new SelfieRepository(dataLayer);
+            var imageDataLayer = new SqlServerImageDataLayer(_context);
+            _repository = new SelfieRepository(dataLayer,imageDataLayer);
+            var moqEnvironnement = new Mock<IWebHostEnvironment>();
+            _environment = moqEnvironnement.Object;
 
         }
 
@@ -64,11 +69,11 @@ namespace Test.SelfieAWookie.API.UI
             // Act
             /*ISelfieDataLayer dataLayer = new SqlServerSelfieDataLayer(_context);
             ISelfieRepository repository = new SelfieRepository(dataLayer);*/
-            SelfieController controller = new(_repository);
+            SelfieController controller = new(_repository, _environment);
             SelfieDTOAddOne selfieAdd = new() {
                 Id= 0,
                 Title = "j'aime les frittes",
-                PathImage = null,
+                //PathImage = null,
                 Wookie = new Wookie() { Id = 1, Surname = "Toto" },
             };
 
@@ -83,7 +88,7 @@ namespace Test.SelfieAWookie.API.UI
             Assert.Equal(selfieAdd.Title, value.Title);
             Assert.Equal(selfieAdd, value);
 
-            _context.Selfies.ToList();
+            _context.DisposeAsync();
         }
 
         [Fact]
@@ -120,7 +125,7 @@ namespace Test.SelfieAWookie.API.UI
 
             /*ISelfieDataLayer dataLayer = new SqlServerSelfieDataLayer(_context);
             ISelfieRepository repository = new SelfieRepository(dataLayer);*/
-            SelfieController controller = new (_repository);
+            SelfieController controller = new (_repository, _environment);
 
             var result = controller.Index();
 
@@ -134,13 +139,14 @@ namespace Test.SelfieAWookie.API.UI
             List<SelfieJson>? selfie = ok.Value as List<SelfieJson>;
             Assert.IsType<List<SelfieJson>>(selfie);
             Assert.Equal(4, selfie.Count);
-            
+            _context.DisposeAsync();
+
         }
 
         [Fact]
         public void ShouldListSelfieByOnWookie()
         {
-            SelfieController controller = new(_repository);
+            SelfieController controller = new(_repository, _environment);
             int wookieId = 1;
 
             var result = controller.ListeSelfieByOneWookie(wookieId);
@@ -152,6 +158,7 @@ namespace Test.SelfieAWookie.API.UI
             var valeur = ok.Value as List<Selfie>;
             Assert.NotNull(valeur);
             Assert.Equal(2, valeur.Count);
+            _context.DisposeAsync();
 
         }
 

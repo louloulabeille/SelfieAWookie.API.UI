@@ -15,6 +15,18 @@ create table Selfie(
 	Constraint FK_SelfieWookie Foreign key (WookieId) References Wookie(Id)
 );
 
+alter table Selfie drop ImagePath;
+
+alter table Selfie
+ add ImageId int;
+
+alter  table Selfie add Constraint FK_SelfieImage Foreign key (ImageId) references Images(Id);
+
+ create table Images(
+ Id int primary key not null identity(1,1),
+ Url nvarchar(255))
+
+create index idx_FK_SelfieImages on Selfie(ImageId);
 create index idx_FK_SelfieWookie on Selfie(WookieId);
 
 commit 

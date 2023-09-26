@@ -1,11 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using SelfieAWookie.Core.Selfies.Application.DTO;
 using SelfieAWookie.Core.Selfies.Domain;
-using SelfieAWookie.Core.Selfies.Infrastructure.DataBase;
 using SelfieAWookie.Core.Selfies.Interface.Repository;
-using SelfieAWookie.Core.Selfies.Interface.UnitOfWork;
 
 namespace SelfieAWookie.API.UI.Controllers
 {
@@ -14,11 +10,13 @@ namespace SelfieAWookie.API.UI.Controllers
     public class SelfieController : ControllerBase
     {
         private readonly ISelfieRepository _repository;
+        private readonly IWebHostEnvironment _environment;
 
         //public SelfieController(ISelfieRepository repository, SelfieDbContext dbContext)
-        public SelfieController(ISelfieRepository repository)
+        public SelfieController(ISelfieRepository repository, IWebHostEnvironment environment )
         {
             _repository = repository;
+            _environment = environment;
         }
 
         [HttpGet]
@@ -38,16 +36,18 @@ namespace SelfieAWookie.API.UI.Controllers
                 new SelfieJson()
                 {
                     Id = x.Id,
-                    PathImage = x.ImagePath,
+                    //PathImage = x.ImagePath,
                     Title = x.Title,
-                    WookieJson = x.Wookie is not null? new WookieJson() { Id = x.Wookie.Id , Surname = x.Wookie.Surname }:null,
+                    WookieJson = x.Wookie is not null ? new WookieJson() { Id = x.Wookie.Id, Surname = x.Wookie.Surname } : null,
                 }).ToList();
-                result =  this.Ok(list);
+                result = this.Ok(list);
             }
             catch
             {
                 result = this.BadRequest();
             }
+
+
             return result;
         }
 
@@ -62,7 +62,7 @@ namespace SelfieAWookie.API.UI.Controllers
                 {
                     Id = selfie.Id,
                     Title = selfie.Title,
-                    ImagePath = selfie.PathImage,
+                    //ImagePath = selfie.PathImage,
                     Wookie = selfie.Wookie
                 });
 
@@ -83,15 +83,70 @@ namespace SelfieAWookie.API.UI.Controllers
             return result;
         }
 
-       [HttpGet("GetSelfieByWookieId")]
-        public IActionResult ListeSelfieByOneWookie([FromQuery]int? wookieId = 0)
+        [HttpGet("GetSelfieByWookieId")]
+        public IActionResult ListeSelfieByOneWookie([FromQuery] int? wookieId = 0)
         {
-            //IActionResult result = Ok();
-            var list = _repository.GetAllByWookie(wookieId);
+            IActionResult result;
+            //var param = this.Request.Query["WookieId"];
 
+            try
+            {
+                var list = _repository.GetAllByWookie(wookieId);
+                result = this.Ok(list);
+            }
+            catch {
+                result = this.BadRequest();
+            }
 
-            return this.Ok(list.ToList());
+            return result;
         }
 
+    /*    [Route("Photos")]
+        [HttpPost()]
+        public async Task<IActionResult> AddPictureSync( )
+        {
+            IActionResult result = this.BadRequest();
+            using var bitImg = new MemoryStream();
+            using Stream stream = this.Request.Body;
+
+            if (this.Request.Body.CanRead)
+            {
+                string path = @"\img";
+                await this.Request.Body.CopyToAsync(bitImg,this.Request.HttpContext.RequestAborted);
+                var image = bitImg.ToArray();
+                result = this.Ok(image);
+
+            }
+            return result;
+        }*/
+
+        [Route("Photos")]
+        [HttpPost()]
+        public async Task<IActionResult> AddPictureSync(IFormFile file)
+        {
+            IActionResult result;
+            //string path = Path.Combine(_environment.ContentRootPath,@"images\selfies");
+            string path = Path.Combine(_environment.WebRootPath, @"images\selfies");
+            if (!Directory.Exists(path)) { Directory.CreateDirectory(path); }
+
+            path = Path.Combine(path, file.FileName);
+
+            using FileStream fileStream = new (path,FileMode.OpenOrCreate) ;
+            try
+            {
+                fileStream.Seek(0, SeekOrigin.Begin);
+                await file.CopyToAsync(fileStream);
+                //var content = await stream.ReadToEndAsync();
+                Image img = this._repository.AddImage("/images/selfies/"+file.FileName);
+
+                this._repository.SaveChanges();
+                result = this.Ok(img.Url);
+            }catch
+            {
+                result = this.BadRequest();
+            }
+            
+            return result;
+        }
     }
 }
