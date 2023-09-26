@@ -11,8 +11,8 @@ using SelfieAWookie.Core.Selfies.Infrastructure.DataBase;
 namespace SelfieAWookie.API.UI.Migrations.Migrations
 {
     [DbContext(typeof(SelfieDbContext))]
-    [Migration("20230926120605_InitDatabase")]
-    partial class InitDatabase
+    [Migration("20230926134729_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

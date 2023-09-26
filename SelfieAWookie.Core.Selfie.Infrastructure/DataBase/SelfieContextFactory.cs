@@ -15,13 +15,25 @@ namespace SelfieAWookie.Core.Selfies.Infrastructure.DataBase
         {
 
             // exception System.Reflection.TargetInvocationException au niveau du builder.Build () voir pourquoi après
-            /*IConfigurationBuilder builder = new ConfigurationBuilder().AddJsonFile(Path.Combine(Directory.GetCurrentDirectory(), "Settings", "appsettings.json"));
-            IConfigurationRoot configurationRoot = builder.Build();
-            */
-            //string connexion = configurationRoot.GetConnectionString("AuthentificationSelfieContextConnection") ?? string.Empty;
+            IConfigurationBuilder builder = new ConfigurationBuilder();
+            //DirectoryInfo? info = Directory.GetParent(Directory.GetCurrentDirectory());
 
-            DbContextOptionsBuilder<SelfieDbContext> optionBuilder = new ();
-            //optionBuilder.UseSqlServer(connexion);
+            DbContextOptionsBuilder<SelfieDbContext> optionBuilder = new();
+            /*if (info == null)
+            {
+                optionBuilder.UseSqlServer("Server=localhost;Database=Selfie-Dev;User Id=sa;Password=ieupn486jadF&;TrustServerCertificate=true;"
+                , b => b.MigrationsAssembly("SelfieAWookie.API.UI.Migrations"));
+            }else
+            {
+                builder.SetBasePath(Path.Combine(info.FullName, "SelfieAWookie.API.UI"));
+                builder.AddJsonFile("appsettings.json");
+                IConfigurationRoot configurationRoot = builder.Build();
+                //IConfiguration configuration = builder.Build();
+
+                string connexion = configurationRoot.GetConnectionString("AuthentificationSelfieContextConnection") ?? string.Empty;
+                //string connexion = configuration.GetConnectionString("AuthentificationSelfieContextConnection") ?? throw new InvalidOperationException("authentification not found json settings");
+                optionBuilder.UseSqlServer(connexion, b => b.MigrationsAssembly("SelfieAWookie.API.UI.Migrations"));
+            }*/
             optionBuilder.UseSqlServer("Server=localhost;Database=Selfie-Dev;User Id=sa;Password=ieupn486jadF&;TrustServerCertificate=true;"
                 , b => b.MigrationsAssembly("SelfieAWookie.API.UI.Migrations"));
 
