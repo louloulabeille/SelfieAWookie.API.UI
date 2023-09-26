@@ -45,7 +45,7 @@ if (app.Environment.IsDevelopment())
 //app.UseStatusCodePagesWithRedirects("api/v1/ErrorsController/{0}"); //-- gestion des erreurs -- faire le controller error pour retourné un object error
 
 app.UseHttpsRedirection();
-app.UseStaticFiles(); // pour mettre en place le répertoire wwwroot s'il n'existe pas - il faut le créer possible de changer le répetoire du root de l'application
+app.UseStaticFiles(); // pour mettre en place le répertoire wwwroot s'il n'existe pas - il faut le créer- possible de changer le répetoire du root de l'application en applicant des options
 
 app.UseAuthorization();
 

@@ -16,8 +16,10 @@ namespace SelfieAWookie.Core.Selfies.Infrastructure.DataBase.EntityConfiguration
             builder.ToTable("Images");
             builder.HasKey(x => x.Id);
 
-            builder.Property(x=>x.Id).IsRequired();
-            builder.Property(x=>x.Url).IsRequired();
+            builder.Property(x=>x.Id).IsRequired()
+                .HasAnnotation("SqlServer:Identity", "1, 1");
+            builder.Property(x=>x.Url).HasMaxLength(255)
+                .IsRequired();
         }
     }
 }
