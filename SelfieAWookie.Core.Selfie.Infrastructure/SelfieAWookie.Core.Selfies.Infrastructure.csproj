@@ -4,6 +4,7 @@
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+	  <OutputPath>..\SelfieAWookie.Core.Selfies.Infrastructure\bin\$(Configuration)\</OutputPath>
   </PropertyGroup>
 
   <ItemGroup>
