@@ -19,12 +19,16 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // appel des options de CROS
-builder.Services.GetAddCorsOption();
+builder.Services.GetAddCorsOption(builder.Configuration);
 
 #region DbContext
 builder.Services.AddDbContext<SelfieDbContext>(options =>
 {
     options.UseSqlServer(stringConnection);
+});
+builder.Services.AddDbContext<IdentitySelfieDbContext>(options =>
+{
+    options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityContext"));
 });
 #endregion
 #region Injection
@@ -50,7 +54,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles(); // pour mettre en place le répertoire wwwroot s'il n'existe pas - il faut le créer- possible de changer le répetoire du root de l'application en applicant des options
-app.UseCors("DEFAULT_POLICY");
+app.UseCors(SecurityCROSMethod.Policy2);
 
 app.UseAuthorization();
 

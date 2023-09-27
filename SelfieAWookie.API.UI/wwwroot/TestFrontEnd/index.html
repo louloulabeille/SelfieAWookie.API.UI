@@ -8,6 +8,18 @@
 </head>
 <body>
     <h1>Test api</h1>
+    <div>
+        <table>
+            <tr>
+                <th>Numéro de selfie</th>
+                <th>Titre du Selfie</th>
+                <th>Wookie</th>
+            </tr>
+            <tbody id="tableSelfie">
+
+            </tbody>
+        </table>
+    </div>
     <script>
         var myHeaders = new Headers();
         myHeaders.append("Content-Type", "application/json");
@@ -16,11 +28,21 @@
             method: 'GET',
             headers: myHeaders
         }
+        const table = document.getElementById('tableSelfie');
 
-        fetch('https://localhost:7227/api/v1/selfie', myInit)
+        fetch('https://localhost:7227/api/v1/selfie/GetSelfieByWookieId/?wookieId=1', myInit)
                  .then(result => result.json())
                  .then(selfies => {
-                    console.info(selfies);
+                    //console.info(selfies);
+                    let html = '';
+                    selfies.forEach(element => {
+                        console.info(element);
+                        let row = `<tr><td>${element.id}</td><td>${element.title}</td><td>${element.wookieJson.surname}</td></tr>`;
+                        html += row;
+                    });
+                    console.info(html);
+                    console.info(table);
+                    table.innerHTML = html;
                  });
     </script>
 </body>
