@@ -64,7 +64,7 @@ namespace SelfieAWookie.API.UI.Controllers
                 }else
                 {
                     await _userManager.DeleteAsync(user); // on supprime l'uitlisateur si pas bon
-                    result = this.BadRequest(retour);
+                    result = this.BadRequest(retour); // retourne le message d'erreur lors de la création du compte
                 }
                 
             }

@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Connections.Features;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Connections.Features;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using SelfieAWookie.API.UI.ExtensionMethod;
@@ -13,6 +15,7 @@ namespace SelfieAWookie.API.UI.Controllers
     [Route("api/v1/[controller]")]
     [ApiController]
     [EnableCors(SecurityCROSMethod.Policy3)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class SelfieController : ControllerBase
     {
         private readonly ISelfieRepository _repository;
