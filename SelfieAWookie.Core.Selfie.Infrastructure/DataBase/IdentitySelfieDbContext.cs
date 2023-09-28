@@ -10,16 +10,16 @@ using System.Threading.Tasks;
 
 namespace SelfieAWookie.Core.Selfies.Infrastructure.DataBase
 {
-    public class IdentitySelfieDbContext : IdentityDbContext, IUnitOfWork
+    public class IdentitySelfieDbContext : IdentityDbContext<AuthentificationUser>, IUnitOfWork
     {
         public IdentitySelfieDbContext(DbContextOptions<IdentitySelfieDbContext> options) : base(options)
         {
         }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        /*protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer("Server=localhost;Database=Identity;User Id=sa;Password=ieupn486jadF&;TrustServerCertificate=true;");
-        }
+        }*/
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

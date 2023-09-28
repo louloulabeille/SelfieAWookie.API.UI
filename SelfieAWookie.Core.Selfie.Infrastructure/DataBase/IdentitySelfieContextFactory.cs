@@ -18,10 +18,9 @@ namespace SelfieAWookie.Core.Selfies.Infrastructure.DataBase
             //IConfigurationBuilder builder = new ConfigurationBuilder();
            // DirectoryInfo? info = Directory.GetParent(Directory.GetCurrentDirectory());
 
-            DbContextOptionsBuilder<IdentitySelfieDbContext> optionBuilder = new();
+             var optionBuilder = new DbContextOptionsBuilder<IdentitySelfieDbContext>();
 
-            optionBuilder.UseSqlServer("Server=localhost;Database=Identity;User Id=sa;Password=ieupn486jadF&;TrustServerCertificate=true;"
-                , b => b.MigrationsAssembly("SelfieAWookie.API.UI.Migrations"));
+            optionBuilder.UseSqlServer("Server=localhost;Database=Identity;User Id=sa;Password=ieupn486jadF&;TrustServerCertificate=true;");
 
             return new IdentitySelfieDbContext(optionBuilder.Options);
         }

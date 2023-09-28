@@ -9,8 +9,8 @@ using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
-string? stringConnection = builder.Configuration.GetConnectionString("AuthentificationSelfieContextConnection")
-    ?? throw new InvalidOperationException("Connection string 'AuthentificationUserContextConnection' not found."); ;
+//string? stringConnection = builder.Configuration.GetConnectionString("AuthentificationSelfieContextConnection")
+//    ?? throw new InvalidOperationException("Connection string 'AuthentificationUserContextConnection' not found."); ;
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -22,14 +22,15 @@ builder.Services.AddSwaggerGen();
 builder.Services.GetAddCorsOption(builder.Configuration);
 
 #region DbContext
-builder.Services.AddDbContext<SelfieDbContext>(options =>
+builder.Services.AddAllContext(builder.Configuration);  // ajout dans une instand méthode des 2 contexts 
+/*builder.Services.AddDbContext<SelfieDbContext>(options =>
 {
     options.UseSqlServer(stringConnection);
 });
 builder.Services.AddDbContext<IdentitySelfieDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityContext"));
-});
+});*/
 #endregion
 #region Injection
 /*builder.Services.AddScoped<ISelfieDataLayer, SqlServerSelfieDataLayer>();
@@ -56,6 +57,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles(); // pour mettre en place le répertoire wwwroot s'il n'existe pas - il faut le créer- possible de changer le répetoire du root de l'application en applicant des options
 app.UseCors(SecurityCROSMethod.Policy2);
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
