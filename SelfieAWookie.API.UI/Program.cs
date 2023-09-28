@@ -1,4 +1,5 @@
 using SelfieAWookie.API.UI.ExtensionMethod;
+using SelfieAWookie.Core.Selfies.Infrastructure.DataBase;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,13 +26,23 @@ builder.Services.AddDbContext<IdentitySelfieDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityContext"));
 });*/
 #endregion
-#region Injection
+
+#region Injection Layer & Repository
 /*builder.Services.AddScoped<ISelfieDataLayer, SqlServerSelfieDataLayer>();
 builder.Services.AddScoped<ISelfieRepository, SelfieRepository>();
 
 builder.Services.AddScoped<IWookieDataLayer, SqlServerWookieDataLayer>();
 builder.Services.AddScoped<IWookieRepository, WookieRepository>();*/
 builder.Services.PrepareInjectionData();
+#endregion 
+
+#region JwT et Identity
+builder.Services.AddDefaultIdentity<AuthentificationUser> (options => { // options d'authentification
+    
+}).AddEntityFrameworkStores<IdentitySelfieDbContext>(); // liaison entre identity et le dbcontext
+
+// ajout du systeme d'authentification identity et jwt
+builder.Services.AddCustomAuthentification(builder.Configuration);
 #endregion
 
 var app = builder.Build();
@@ -50,7 +61,7 @@ if (app.Environment.IsDevelopment())
 //app.UseStatusCodePagesWithRedirects("api/v1/ErrorsController/{0}"); //-- gestion des erreurs -- faire le controller error pour retourné un object error
 
 app.UseHttpsRedirection();
-app.UseStaticFiles(); // pour mettre en place le répertoire wwwroot s'il n'existe pas - il faut le créer- possible de changer le répetoire du root de l'application en applicant des options
+app.UseStaticFiles(); // pour mettre en place le répertoire wwwroot s'il n'existe pas - il faut le créer- possible de changer le répertoire de root de l'application en applicant des options
 app.UseCors(SecurityCROSMethod.Policy2);
 
 app.UseAuthentication();

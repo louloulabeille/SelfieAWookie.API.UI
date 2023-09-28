@@ -71,11 +71,11 @@ namespace SelfieAWookie.API.UI.ExtensionMethod
                 options.SaveToken = true;       // enregistre le token après authentification
                 options.TokenValidationParameters = new TokenValidationParameters()
                 {
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),       // options de l'encodage de la signature key
                     ValidateAudience = false,
                     ValidateActor = false,
                     ValidateIssuer = false,
-                    ValidateLifetime = true,
+                    ValidateLifetime = true,        // validité du token dans le temps
                 };
             });
         } 

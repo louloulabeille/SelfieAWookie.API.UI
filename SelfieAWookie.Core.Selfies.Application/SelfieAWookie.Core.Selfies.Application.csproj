@@ -14,4 +14,8 @@
     <ProjectReference Include="..\SelfieAWookie.Core.Selfie.Infrastructure\SelfieAWookie.Core.Selfies.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Outil\" />
+  </ItemGroup>
+
 </Project>

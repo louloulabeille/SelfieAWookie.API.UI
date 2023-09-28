@@ -9,5 +9,6 @@ namespace SelfieAWookie.Core.Selfies.Infrastructure.DataBase
 {
     public class AuthentificationUser : IdentityUser
     {
+        public AuthentificationUser(string userName) : base(userName) { }
     }
 }

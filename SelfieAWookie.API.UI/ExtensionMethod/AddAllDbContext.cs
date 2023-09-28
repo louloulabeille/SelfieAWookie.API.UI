@@ -10,7 +10,7 @@ namespace SelfieAWookie.API.UI.ExtensionMethod
         /// </summary>
         /// <param name="service">méthod d'extension</param>
         /// <param name="configuration">paramétrage de configuration</param> -- injection par méthode
-        /// <exception cref="InvalidOperationException">si la connection string n'est pas trouvé une exception est levée</exception>
+        /// <exception cref="InvalidOperationException">si la connection string n'est pas trouvé une </exception>
         public static void AddAllContext(this IServiceCollection service, IConfiguration configuration ) {
 
             // recherche de la chaine de connection
