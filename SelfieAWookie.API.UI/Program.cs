@@ -38,7 +38,7 @@ builder.Services.PrepareInjectionData();
 #endregion 
 
 #region Serilog -- ajout des logs méthode d'extension
-builder.Logging.AddFileInstension(builder.Environment);
+//builder.Logging.AddFileInstension(builder.Environment);
 #endregion
 
 #region JwT et Identity

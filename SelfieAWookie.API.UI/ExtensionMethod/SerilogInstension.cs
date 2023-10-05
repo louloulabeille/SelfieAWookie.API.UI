@@ -11,7 +11,7 @@
         public static void AddFileInstension(this ILoggingBuilder logging, IWebHostEnvironment environment)
         {
             string pathSerilog = Path.Combine(environment.ContentRootPath, "Logs/suivie-de-selfieAWookies-{Date}.txt");
-            logging.AddFile(pathSerilog, isJson: true);
+            //logging.AddFile(pathSerilog, isJson: true);
         }
     }
 }
