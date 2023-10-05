@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using SelfieAWookie.Core.Selfies.Application.Configuration;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
@@ -28,15 +31,18 @@ namespace SelfieAWookie.API.UI.ExtensionMethod
                     /*builder.AllowAnyOrigin()
                     .AllowAnyHeader()
                     .AllowAnyMethod();*/
-                    // a ajouter par la suite dans un fichier de configuration
-                    builder.WithOrigins(configuration["CORS:Orign"]??string.Empty)
+
+                    ElementConfigurationCros cros = new ();
+                    configuration.GetSection("Cors").Bind(cros);
+
+                    //builder.WithOrigins(configuration["Cors:Orign"] ??string.Empty)
+                    builder.WithOrigins(cros.Origin)
                     .AllowAnyHeader()
                     .AllowAnyMethod();
                 });
 
                 options.AddPolicy(Policy2, builder =>
                 {
-
                     // a ajouter par la suite dans un fichier de configuration
                     builder.WithOrigins("http://127.0.0.1:5501")
                     .AllowAnyHeader()
@@ -45,7 +51,6 @@ namespace SelfieAWookie.API.UI.ExtensionMethod
 
                 options.AddPolicy(Policy3, builder =>
                 {
-
                     // a ajouter par la suite dans un fichier de configuration
                     builder.WithOrigins("http://127.0.0.1:5502")
                     .AllowAnyHeader()
@@ -59,25 +64,5 @@ namespace SelfieAWookie.API.UI.ExtensionMethod
             services.GetAddCorsOption(configuration);
         }
 
-        public static void AddCustomAuthentification(this IServiceCollection services, IConfiguration configuration)
-        {
-            string key = configuration["JWT:Key"] ?? throw new InvalidOperationException("La clé Jwt ne doit pas vide."); 
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(options => {
-                options.SaveToken = true;       // enregistre le token après authentification
-                options.TokenValidationParameters = new TokenValidationParameters()
-                {
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key)),       // options de l'encodage de la signature key
-                    ValidateAudience = false,
-                    ValidateActor = false,
-                    ValidateIssuer = false,
-                    ValidateLifetime = true,        // validité du token dans le temps
-                };
-            });
-        } 
     }
 }

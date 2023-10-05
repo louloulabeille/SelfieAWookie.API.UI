@@ -97,6 +97,7 @@ namespace SelfieAWookie.API.UI.Controllers
         }
 
         [DisableCors] // les règles sont désactivés plus rien ne marche
+        //[EnableCors(SecurityCROSMethod.Default_Policy)]
         [HttpGet("GetSelfieByWookieId")]
         public IActionResult ListeSelfieByOneWookie([FromQuery] int? wookieId = 0)
         {
@@ -105,7 +106,15 @@ namespace SelfieAWookie.API.UI.Controllers
 
             try
             {
-                var list = _repository.GetAllByWookie(wookieId);
+                var list = _repository.GetAllByWookie(wookieId).Select(x=>
+                 new SelfieJson()
+                 {
+                     Id = x.Id,
+                     //PathImage = x.ImagePath,
+                     Title = x.Title,
+                     WookieJson = x.Wookie is not null ? new WookieJson() { Id = x.Wookie.Id, Surname = x.Wookie.Surname } : null,
+                 }
+                );
                 result = this.Ok(list);
             }
             catch {

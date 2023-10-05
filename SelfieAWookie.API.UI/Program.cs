@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using SelfieAWookie.API.UI.ExtensionMethod;
 using SelfieAWookie.Core.Selfies.Infrastructure.DataBase;
 
@@ -36,6 +37,10 @@ builder.Services.AddScoped<IWookieRepository, WookieRepository>();*/
 builder.Services.PrepareInjectionData();
 #endregion 
 
+#region Serilog -- ajout des logs méthode d'extension
+builder.Logging.AddFileInstension(builder.Environment);
+#endregion
+
 #region JwT et Identity
 builder.Services.AddDefaultIdentity<AuthentificationUser> (options => { // options d'authentification
     
@@ -45,13 +50,17 @@ builder.Services.AddDefaultIdentity<AuthentificationUser> (options => { // optio
 builder.Services.AddCustomAuthentification(builder.Configuration);
 #endregion
 
+#region Add option AppSetting
+builder.Services.AddCustonAppSetting(builder.Configuration); 
+#endregion
+
 var app = builder.Build();
 
 // attention avec les middleswares ils ont un ordre d'appel très important voir documentation de Microsoft 
 //https://learn.microsoft.com/en-us/aspnet/core/fundamentals/middleware/?view=aspnetcore-7.0
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() ||app.Environment.IsStaging())
 {
     app.UseDeveloperExceptionPage();
     app.UseSwagger();

@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using SelfieAWookie.Core.Selfies.Application.Configuration;
 using SelfieAWookie.Core.Selfies.Infrastructure.DataBase;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -10,12 +12,14 @@ namespace SelfieAWookie.API.UI.Outil
 {
     public static class GenerateTokenJWT
     {
-        public static string GenerateTokenUserJwt(IdentityUser user, IConfiguration configuration)
+        public static string GenerateTokenUserJwt(IdentityUser user, ElementConfigurationSecret secret)
         {
+            /*ElementConfigurationSecret secret = new();
+            configuration.GetSection("JWT").Bind(secret);*/
             var jwtTokenHandler = new JwtSecurityTokenHandler();
 
-            string secret = configuration["JWT:Key"] ?? throw new InvalidOperationException("Problem key Jwt");
-            var key = Encoding.ASCII.GetBytes(secret);
+            //string secret = configuration["JWT:Key"] ?? throw new InvalidOperationException("Problem key Jwt");
+            var key = Encoding.ASCII.GetBytes(secret.Key);
 
             // descrition du token
             var tokenDecriptor = new SecurityTokenDescriptor()
@@ -37,5 +41,7 @@ namespace SelfieAWookie.API.UI.Outil
             var jwtToken = jwtTokenHandler.WriteToken(token);
             return jwtToken;
         }
+
+        
     }
 }

@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using SelfieAWookie.API.UI.Outil;
+using SelfieAWookie.Core.Selfies.Application.Configuration;
 using SelfieAWookie.Core.Selfies.Application.DTO;
 using SelfieAWookie.Core.Selfies.Infrastructure.DataBase;
 
@@ -11,13 +13,17 @@ namespace SelfieAWookie.API.UI.Controllers
     public class AuthenticateController : Controller
     {
 
-        private UserManager<AuthentificationUser> _userManager;
-        private readonly IConfiguration _configuration; 
+        private readonly UserManager<AuthentificationUser> _userManager;
+        private readonly IConfiguration _configuration;
+        private readonly ILogger<AuthenticateController> _logger;
+        private readonly ElementConfigurationSecret _secret;
 
-        public AuthenticateController(UserManager<AuthentificationUser> userManager, IConfiguration configuration)
+        public AuthenticateController(UserManager<AuthentificationUser> userManager, IConfiguration configuration, ILogger<AuthenticateController> logger, IOptions<ElementConfigurationSecret> options)
         {
             _userManager = userManager;
             _configuration = configuration;
+            _logger = logger;
+            _secret = options.Value;
         }
 
         #region action public
@@ -28,11 +34,11 @@ namespace SelfieAWookie.API.UI.Controllers
             AuthentificationUser? user =  await _userManager.FindByNameAsync(userDTO.Nom);
             if (user != null)
             {
-                if (await _userManager.CheckPasswordAsync(user, userDTO.Password) ) return result = this.Ok( new UserAuthentificationDTO()
+                if (await _userManager.CheckPasswordAsync(user, userDTO.Password) ) result = this.Ok( new UserAuthentificationDTO()
                 {
                     Login = user.Email ?? "default",
                     Nom = user.UserName ?? "default",
-                    Token = GenerateTokenJWT.GenerateTokenUserJwt(user, _configuration),
+                    Token = GenerateTokenJWT.GenerateTokenUserJwt(user, _secret),
                 });
 
             }
@@ -58,7 +64,7 @@ namespace SelfieAWookie.API.UI.Controllers
                 var retour = await _userManager.AddPasswordAsync(user, userDTO.Password);
                 if ( retour.Succeeded )
                 {
-                    userDTO.Token = GenerateTokenJWT.GenerateTokenUserJwt(user, _configuration);
+                    userDTO.Token = GenerateTokenJWT.GenerateTokenUserJwt(user, _secret);
                     userDTO.Password = user.PasswordHash ?? "Default";
                     result = this.Ok(userDTO);
                 }else
