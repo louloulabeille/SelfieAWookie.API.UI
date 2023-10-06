@@ -5,7 +5,7 @@ namespace SelfieAWookie.API.UI.MiddleWare
 {
     public class LogRequestMiddleware
     {
-        private RequestDelegate _next;
+        private readonly RequestDelegate _next;
         private readonly ILogger _logger;
 
         public LogRequestMiddleware( ILogger<LoggerSelfie> logger, RequestDelegate request)

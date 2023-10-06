@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using MediatR;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Connections.Features;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
+using SelfieAWookie.API.UI.Application.Commands;
+using SelfieAWookie.API.UI.Application.Queries;
 using SelfieAWookie.API.UI.ExtensionMethod;
 using SelfieAWookie.Core.Selfies.Application.DTO;
 using SelfieAWookie.Core.Selfies.Domain;
@@ -21,21 +24,25 @@ namespace SelfieAWookie.API.UI.Controllers
         private readonly ISelfieRepository _repository;
         private readonly IWebHostEnvironment _environment;
         private readonly ILogger _logger;
+        private readonly IMediator _mediator;
 
         //public SelfieController(ISelfieRepository repository, SelfieDbContext dbContext)
-        public SelfieController(ILogger<SelfieController> logger, ISelfieRepository repository, IWebHostEnvironment environment )
+        public SelfieController(IMediator mediator,ILogger<SelfieController> logger, ISelfieRepository repository, IWebHostEnvironment environment )
         {
             _repository = repository;
             _environment = environment;
             _logger = logger;
+            _mediator = mediator;
         }
 
-        //[EnableCors(SecurityCROSMethod.Default_Policy)]
-        [EnableCors(SecurityCROSMethod.PolicyAll)]
+        
+        
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        //[EnableCors(SecurityCROSMethod.Default_Policy)]
+        [EnableCors(SecurityCROSMethod.PolicyAll)]
         public IActionResult Index()
         {
             /*IEnumerable<Selfie> list = Enumerable.Range(1, 10).Select(index => new Selfie()
@@ -57,6 +64,7 @@ namespace SelfieAWookie.API.UI.Controllers
                     Title = x.Title,
                     WookieJson = x.Wookie is not null ? new WookieJson() { Id = x.Wookie.Id, Surname = x.Wookie.Surname } : null,
                 }).ToList();
+
                 result = this.Ok(list);
             }
             catch (Exception ex)
@@ -73,15 +81,15 @@ namespace SelfieAWookie.API.UI.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-        //[EnableCors(SecurityCROSMethod.Default_Policy)]
+        [EnableCors(SecurityCROSMethod.Default_Policy)]
         public IActionResult AddOneSelfie([FromBody]SelfieDTOAddOne selfie)
         {
             IActionResult result = this.BadRequest("Probleme au niveau de l'ajout du Selfie.");
             // mise en place pour la récupération dans le body d'une image
             try
             {
-                
-                #region Ajout et enregistrement
+
+                /*#region Ajout et enregistrement
                 Selfie addSelfie = _repository.Add(new Selfie
                 {
                     Id = selfie.Id,
@@ -92,12 +100,18 @@ namespace SelfieAWookie.API.UI.Controllers
                 });
 
                 _repository.SaveChanges();
+
                 #endregion
                 if (addSelfie is not null)
                 {
                     selfie.Id = addSelfie.Id;
                     result = this.Ok(selfie);
+                }*/
+                if (_mediator.Send(new AddSelfieCommand() { Selfie = selfie} ).Result is SelfieDTOAddOne retour && retour is not null)
+                {
+                    result = this.Ok(retour);
                 }
+                
             }
             catch
             {
@@ -108,8 +122,13 @@ namespace SelfieAWookie.API.UI.Controllers
             return result;
         }
 
-        [DisableCors] // les règles sont désactivés plus rien ne marche
-        //[EnableCors(SecurityCROSMethod.Default_Policy)]
+        /// <summary>
+        /// Action qui retourne la liste de selfie par Wookie
+        /// </summary>
+        /// <param name="wookieId">id du wookie recherché</param>
+        /// <returns></returns>
+        //[DisableCors] // les règles sont désactivés plus rien ne marche
+        [EnableCors(SecurityCROSMethod.Default_Policy)]
         [HttpGet("GetSelfieByWookieId")]
         public IActionResult ListeSelfieByOneWookie([FromQuery] int? wookieId = 0)
         {
@@ -118,16 +137,22 @@ namespace SelfieAWookie.API.UI.Controllers
 
             try
             {
-                var list = _repository.GetAllByWookie(wookieId).Select(x=>
-                 new SelfieJson()
-                 {
-                     Id = x.Id,
-                     //PathImage = x.ImagePath,
-                     Title = x.Title,
-                     WookieJson = x.Wookie is not null ? new WookieJson() { Id = x.Wookie.Id, Surname = x.Wookie.Surname } : null,
-                 }
-                );
-                result = this.Ok(list);
+                if (wookieId != null) {
+                    var list = _mediator.Send(new SelectAllSelfiesByWookie() { WookieId = wookieId.Value });
+                    /*var list = _repository.GetAllByWookie(wookieId).Select(x=>
+                     new SelfieJson()
+                     {
+                         Id = x.Id,
+                         //PathImage = x.ImagePath,
+                         Title = x.Title,
+                         WookieJson = x.Wookie is not null ? new WookieJson() { Id = x.Wookie.Id, Surname = x.Wookie.Surname } : null,
+                     }
+                    );*/
+                    result = this.Ok(list.Result);
+                }else
+                {
+                    result = this.BadRequest("Aucun Wookie Id n'a été passé.");
+                }
             }
             catch {
                 result = this.BadRequest();

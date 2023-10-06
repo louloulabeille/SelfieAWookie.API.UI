@@ -26,6 +26,13 @@ namespace SelfieAWookie.API.UI.ExtensionMethod
         {
             services.AddCors(options =>
             {
+                options.AddPolicy(PolicyAll, builder =>
+                {
+                    builder.AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+                });
+
                 options.AddPolicy(Default_Policy, builder =>
                 {
                     // autorisation de tout
@@ -58,12 +65,7 @@ namespace SelfieAWookie.API.UI.ExtensionMethod
                     .AllowAnyMethod();
                 });
 
-                options.AddPolicy(PolicyAll, builder =>
-                {
-                    builder
-                    .AllowAnyHeader()
-                    .AllowAnyMethod();
-                });
+                
 
             });
         }

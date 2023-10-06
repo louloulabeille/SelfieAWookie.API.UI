@@ -22,7 +22,7 @@
     </div>
     <script>
         var myHeaders = new Headers();
-        const token = 'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJJZCI6IjJmZWY0ZjFmLTM0ZjEtNDVkZi1iMTFjLTVmZThiNTAxYjQ0MiIsInN1YiI6ImxvdWxvdUBoZmd0ZGcuY29tIiwiZW1haWwiOiJsb3Vsb3VAaGZndGRnLmNvbSIsImp0aSI6ImZhZjNmNWMyLTkzOGMtNGVhNS05MWZiLTM3MTcwYTgzMmYyNSIsIm5iZiI6MTY5NjUyMDE0NCwiZXhwIjoxNjk2NTYzMzQ0LCJpYXQiOjE2OTY1MjAxNDR9.HNcc_vThsWNEZau7gALpGTZiJg9s0bV-crb5Knrb6eC9dX611rOxPprolwLo1901mUEQv0Qqbr18-i2IBkeSAw';
+        const token = 'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJJZCI6IjJmZWY0ZjFmLTM0ZjEtNDVkZi1iMTFjLTVmZThiNTAxYjQ0MiIsInN1YiI6ImxvdWxvdUBoZmd0ZGcuY29tIiwiZW1haWwiOiJsb3Vsb3VAaGZndGRnLmNvbSIsImp0aSI6IjdkMDA2MzAzLTEwZmQtNGMyNS05NTg0LWEwNzY5YjQzNjZmZCIsIm5iZiI6MTY5NjYwMzg0MiwiZXhwIjoxNjk2NjQ3MDQyLCJpYXQiOjE2OTY2MDM4NDJ9.2HXdQXRdf1OhYHEP2-ABAS6EyTvz-r6CE0EyCUUE2FZGVLIB3tovWrOPOfsu6ZGR8RTETM2mH8iR70b8ejdSfQ';
         myHeaders.append("Content-Type", "application/json");
         myHeaders.append('Authorization','Bearer ' + token) // envoi avec le token Bearer dans l'entete
 
@@ -31,19 +31,19 @@
             headers: myHeaders
         }
         const table = document.getElementById('tableSelfie');
-        fetch('https://localhost:5081/api/v1/selfie', myInit)
+        fetch('https://localhost:7227/api/v1/selfie', myInit)
         //fetch('https://localhost:7227/api/v1/selfie/GetSelfieByWookieId/?wookieId=1', myInit)
                  .then(result => result.json())
                  .then(selfies => {
                     //console.info(selfies);
                     let html = '';
                     selfies.forEach(element => {
-                        console.info(element);
+                        //console.info(element);
                         let row = `<tr><td>${element.id}</td><td>${element.title}</td><td>${element.wookieJson.surname}</td></tr>`;
                         html += row;
                     });
-                    console.info(html);
-                    console.info(table);
+                    //console.info(html);
+                    //console.info(table);
                     table.innerHTML = html;
                  });
     </script>
