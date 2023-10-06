@@ -1,6 +1,8 @@
 using Microsoft.Extensions.Logging;
 using SelfieAWookie.API.UI.ExtensionMethod;
+using SelfieAWookie.API.UI.MiddleWare;
 using SelfieAWookie.Core.Selfies.Infrastructure.DataBase;
+using SelfieAWookie.Core.Selfies.Infrastructure.Logger;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,11 +53,12 @@ builder.Services.AddCustomAuthentification(builder.Configuration);
 #endregion
 
 #region Add option AppSetting
-builder.Services.AddCustonAppSetting(builder.Configuration); 
+builder.Services.AddCustonAppSetting(builder.Configuration);
 #endregion
 
-var app = builder.Build();
+builder.Logging.AddProvider(new LoggerSelfieProvider()); // création d'un logger spécialisé provider console
 
+var app = builder.Build();
 // attention avec les middleswares ils ont un ordre d'appel très important voir documentation de Microsoft 
 //https://learn.microsoft.com/en-us/aspnet/core/fundamentals/middleware/?view=aspnetcore-7.0
 
@@ -66,6 +69,7 @@ if (app.Environment.IsDevelopment() ||app.Environment.IsStaging())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseMiddleware<LogRequestMiddleware>();
 
 //app.UseStatusCodePagesWithRedirects("api/v1/ErrorsController/{0}"); //-- gestion des erreurs -- faire le controller error pour retourné un object error
 

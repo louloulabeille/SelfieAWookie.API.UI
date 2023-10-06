@@ -1,4 +1,15 @@
-﻿namespace SelfieAWookie.API.UI.ExtensionMethod
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Microsoft.Extensions.Configuration;
+using Serilog;
+using Serilog.Debugging;
+using Serilog.Formatting;
+using Serilog.Formatting.Display;
+using Microsoft.Extensions.Logging;
+using Microsoft.VisualBasic;
+
+namespace SelfieAWookie.API.UI.ExtensionMethod
 {
     public static class SerilogInstension
     {
@@ -11,21 +22,8 @@
         public static void AddFileInstension(this ILoggingBuilder logging, IWebHostEnvironment environment)
         {
             string pathSerilog = Path.Combine(environment.ContentRootPath, "Logs/suivie-de-selfieAWookies-{Date}.txt");
-            logging.AddFile(pathSerilog, isJson: true); 
+            //logging.AddFile(pathSerilog, isJson: true); 
         }
 
-        /// <summary>
-        /// enregistre le log au niveau du fichier 
-        /// problème avec le Serilog extension File - il utilise d'ancienne version du package
-        /// IO etc
-        /// </summary>
-        /// <param name="logging"></param>
-        /// <param name="path">chemin du fichier</param>
-        /// <param name="isJson">format d'enregistremnt en json</param>
-        public static void AddFile (this ILoggingBuilder logging, string path, bool isJson)
-        {
-            // je ne vais pas l'utiliser pour le moment - programmer la chose
-            // git du projet https://github.com/serilog/serilog-extensions-logging-file
-        }
     }
 }

@@ -19,6 +19,7 @@ namespace SelfieAWookie.API.UI.ExtensionMethod
         public const string Default_Policy = "DEFAULT_POLICY";
         public const string Policy2 = "Policy2";
         public const string Policy3 = "Policy3";
+        public const string PolicyAll = "PolicyAll";        // ouverture pour tous
 
         // utilisation de configuration à paramétrer
         private static void GetAddCorsOption (this IServiceCollection services , IConfiguration configuration )
@@ -56,6 +57,14 @@ namespace SelfieAWookie.API.UI.ExtensionMethod
                     .AllowAnyHeader()
                     .AllowAnyMethod();
                 });
+
+                options.AddPolicy(PolicyAll, builder =>
+                {
+                    builder
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+                });
+
             });
         }
 

@@ -20,16 +20,22 @@ namespace SelfieAWookie.API.UI.Controllers
     {
         private readonly ISelfieRepository _repository;
         private readonly IWebHostEnvironment _environment;
+        private readonly ILogger _logger;
 
         //public SelfieController(ISelfieRepository repository, SelfieDbContext dbContext)
-        public SelfieController(ISelfieRepository repository, IWebHostEnvironment environment )
+        public SelfieController(ILogger<SelfieController> logger, ISelfieRepository repository, IWebHostEnvironment environment )
         {
             _repository = repository;
             _environment = environment;
+            _logger = logger;
         }
 
-        [EnableCors(SecurityCROSMethod.Default_Policy)]
+        //[EnableCors(SecurityCROSMethod.Default_Policy)]
+        [EnableCors(SecurityCROSMethod.PolicyAll)]
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public IActionResult Index()
         {
             /*IEnumerable<Selfie> list = Enumerable.Range(1, 10).Select(index => new Selfie()
@@ -42,6 +48,7 @@ namespace SelfieAWookie.API.UI.Controllers
             IActionResult result = BadRequest();
             try
             {
+
                 IEnumerable<SelfieJson> list = _repository.GetAll().Select(x =>
                 new SelfieJson()
                 {
@@ -52,9 +59,10 @@ namespace SelfieAWookie.API.UI.Controllers
                 }).ToList();
                 result = this.Ok(list);
             }
-            catch
+            catch (Exception ex)
             {
-                result = this.BadRequest();
+                _logger.LogError("SelfieController\\Index \n" + ex.Message);
+                result = this.Problem("Erreur interne");
             }
 
 
@@ -62,12 +70,17 @@ namespace SelfieAWookie.API.UI.Controllers
         }
 
         [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        //[EnableCors(SecurityCROSMethod.Default_Policy)]
         public IActionResult AddOneSelfie([FromBody]SelfieDTOAddOne selfie)
         {
-            IActionResult result = this.BadRequest();
+            IActionResult result = this.BadRequest("Probleme au niveau de l'ajout du Selfie.");
             // mise en place pour la récupération dans le body d'une image
             try
             {
+                
                 #region Ajout et enregistrement
                 Selfie addSelfie = _repository.Add(new Selfie
                 {
@@ -80,7 +93,6 @@ namespace SelfieAWookie.API.UI.Controllers
 
                 _repository.SaveChanges();
                 #endregion
-
                 if (addSelfie is not null)
                 {
                     selfie.Id = addSelfie.Id;
@@ -90,7 +102,7 @@ namespace SelfieAWookie.API.UI.Controllers
             catch
             {
                 //result = this.BadRequest(ex);
-                result = this.BadRequest();
+                result = this.Problem("Exception levée au niveau de l'ajout d'un selfie.");
             }
 
             return result;
@@ -123,25 +135,6 @@ namespace SelfieAWookie.API.UI.Controllers
 
             return result;
         }
-
-    /*    [Route("Photos")]
-        [HttpPost()]
-        public async Task<IActionResult> AddPictureSync( )
-        {
-            IActionResult result = this.BadRequest();
-            using var bitImg = new MemoryStream();
-            using Stream stream = this.Request.Body;
-
-            if (this.Request.Body.CanRead)
-            {
-                string path = @"\img";
-                await this.Request.Body.CopyToAsync(bitImg,this.Request.HttpContext.RequestAborted);
-                var image = bitImg.ToArray();
-                result = this.Ok(image);
-
-            }
-            return result;
-        }*/
 
         [Route("Photos")]
         [HttpPost()]
