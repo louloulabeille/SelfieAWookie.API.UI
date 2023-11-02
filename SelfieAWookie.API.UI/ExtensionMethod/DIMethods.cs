@@ -23,8 +23,8 @@ namespace SelfieAWookie.API.UI.ExtensionMethod
 
 
             // mise en place de MediatR -- modèle CQRS dissociation entre la lecture et l'écriture dans la base de données
-            // c'est plutot lourd à mettre en place voir la doc de microsoft de quand la même en place
-            // https://learn.microsoft.com/fr-fr/azure/architecture/patterns/cqrs qui explique quand le mettre en place
+            // c'est plutot lourd à mettre en place voir la doc de microsoft de quand la mettre en place
+            // https://learn.microsoft.com/fr-fr/azure/architecture/patterns/cqrs
             // installation mettre le package -- ajouter le service 
             // créer 2 répertoires commands et queries par exmple et créer la classe en IRequest<> / IRequestHandler qui l'utilise
             services.AddMediatR(args=>
